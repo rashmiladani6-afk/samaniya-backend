@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: samayniyatinosathi-api
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false
+      - key: ADMIN_EMAILS
+        sync: false
+      - key: STORAGE_BUCKET
+        value: post-images
