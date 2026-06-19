@@ -12,8 +12,24 @@ import publicCategoriesRouter from './routes/publicCategories.js'
 
 const app = express()
 
-const origin = process.env.CORS_ORIGIN ?? 'http://localhost:5173'
-app.use(cors({ origin, credentials: true }))
+const allowedOrigins = (process.env.CORS_ORIGIN ?? 'http://localhost:5173')
+  .split(',')
+  .map((o) => o.trim())
+  .filter(Boolean)
+
+app.use(
+  cors({
+    origin(origin, callback) {
+      // Allow non-browser tools (no Origin header)
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true)
+      } else {
+        callback(new Error(`CORS blocked for origin: ${origin}`))
+      }
+    },
+    credentials: true,
+  }),
+)
 app.use(express.json({ limit: '10mb' }))
 
 const limiter = rateLimit({ windowMs: 60_000, max: 120 })
